@@ -12,6 +12,14 @@ from tensorflow.keras.models import load_model
 from utils import loadModels, constructArgParser, extractBoxAndFaceROI
 
 def detectFaceAndClassify(faceNet, faceMaskClassifier, testImagePath, threshold):
+    """
+    function to detect face and classify whether a mask is worn or not
+    :param faceNet: pre-trained OpenCV face detection loaded model
+    :param faceMaskClassifier: trained face mask classifier
+    :param testImagePath: test image file path
+    :param threshold: thresold to be considered while cheking confidence of detection of face
+    :return: None , display the image with bounding bozes and respective labels
+    """
     # load the input test image from disk
     image = cv2.imread(testImagePath)
     # making a copy of image and finding the image spatial dimensions

@@ -11,6 +11,10 @@ from tensorflow.keras.models import load_model
 
 
 def constructArgParser():
+    """
+    function to construct argument parser
+    :return: command line args received
+    """
     # parse the arguments by constructing the argument parser
     argP = argparse.ArgumentParser()
     argP.add_argument("-i", "--testImagePath", type=str, default="test_image.jpg",
@@ -52,6 +56,15 @@ def loadModels(arch_path, weights_path, face_mask_path):
 
 
 def extractBoxAndFaceROI(image, faceDetections, itemNum, height, width):
+    """
+    function to extract Bounding box start and end points and extract face Region of Intrest
+    :param image: image from which box and faceROI has to be found
+    :param faceDetections: all the faces detected in the given image
+    :param itemNum: determines which which detected face is used here among all detected faces
+    :param height: height of the image
+    :param width: width of the image
+    :return: faceROI and faceROI, startX, startY, endX, endY points of bounding box
+    """
     # compute the (x, y)-coordinates of the bounding box for the face
     boundingBox = faceDetections[0, 0, itemNum, 3:7] * np.array([width, height, width, height])
     (startX, startY, endX, endY) = boundingBox.astype("int")

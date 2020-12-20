@@ -1,10 +1,13 @@
 # import the necessary packages
-import imutils
-import time
-import argparse
+
 import os
 import cv2
+import time
+import imutils
+import argparse
 import numpy as np
+
+
 import tensorflow
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
@@ -15,6 +18,15 @@ from utils import loadModels, constructArgParser, extractBoxAndFaceROI
 
 
 def detectAndPredictMask(frame, faceNet, faceMaskClassifier, threshold):
+    """
+    function to detect face and classify whether a mask is worn or not
+
+    :param frame: frame extracted from the video
+    :param faceNet: pre-trained OpenCV face detection loaded model
+    :param faceMaskClassifier: trained face mask classifier
+    :param threshold: thresold to be considered while cheking confidence of detection of face
+    :return: location of all faces detected and the prediction for each face detected
+    """
     # construct a blob from the image to pass to the network
     # using standard weights for the face detection model for image preprocessing
     (h, w) = frame.shape[:2]
@@ -40,29 +52,11 @@ def detectAndPredictMask(frame, faceNet, faceMaskClassifier, threshold):
         # greater than the minimum confidence 0.5 or input variable
         if confidence > threshold:
             # extract bounding box dimensions and face Region of intrest for classification
-            # faceROI, startX, startY, endX, endY = extractBoxAndFaceROI(frame, faceDetections, itemNum=i,
-            #                                                            height=h, width=w)
-
-            # compute the (x, y)-coordinates of the bounding box for
-            # the object
-            box = faceDetections[0, 0, i, 3:7] * np.array([w, h, w, h])
-            (startX, startY, endX, endY) = box.astype("int")
-
-            # ensure the bounding boxes fall within the dimensions of
-            # the frame
-            (startX, startY) = (max(0, startX), max(0, startY))
-            (endX, endY) = (min(w - 1, endX), min(h - 1, endY))
-
-            # extract the face ROI, convert it from BGR to RGB channel
-            # ordering, resize it to 224x224, and preprocess it
-            face = frame[startY:endY, startX:endX]
-            face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
-            face = cv2.resize(face, (224, 224))
-            face = img_to_array(face)
-            face = preprocess_input(face)
+            faceROI, startX, startY, endX, endY = extractBoxAndFaceROI(frame, faceDetections, itemNum=i,
+                                                                       height=h, width=w)
 
             # add the face and bounding boxes to their respective lists
-            faces.append(face)
+            faces.append(faceROI)
             locs.append((startX, startY, endX, endY))
 
     # only make a predictions if at least one face was detected
