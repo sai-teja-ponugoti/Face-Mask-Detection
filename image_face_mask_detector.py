@@ -9,7 +9,7 @@ from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.models import load_model
 
-from utils import loadModels
+from utils import loadModels, constructArgParser, extractBoxAndFaceROI
 
 def detectFaceAndClassify(faceNet, faceMaskClassifier, testImagePath, threshold):
     # load the input test image from disk
@@ -36,26 +36,15 @@ def detectFaceAndClassify(faceNet, faceMaskClassifier, testImagePath, threshold)
         # filter out weak detections by ensuring the confidence is
         # greater than the minimum confidence 0.5 or input variable
         if confidence > threshold:
-            # compute the (x, y)-coordinates of the bounding box for the face
-            boundingBox = faceDetections[0, 0, i, 3:7] * np.array([w, h, w, h])
-            (startX, startY, endX, endY) = boundingBox.astype("int")
+            # extract bounding box dimensions and face Region of intrest for classification
+            faceROI, startX, startY, endX, endY = extractBoxAndFaceROI(image, faceDetections, itemNum=i,
+                                                                       height=h, width=w)
 
-            # making sure bounding box is inside the dimensions of the image
-            (startX, startY) = (max(0, startX), max(0, startY))
-            (endX, endY) = (min(w - 1, endX), min(h - 1, endY))
-
-            # extract the face region of interest(ROI), convert it from BGR to RGB channel
-            # ordering, resize it to 224x224, and preprocessing it to be compatible with
-            # face mask classification model
-            faceROI = image[startY:endY, startX:endX]
-            faceROI = cv2.cvtColor(faceROI, cv2.COLOR_BGR2RGB)
-            faceROI = cv2.resize(faceROI, (224, 224))
-            faceROI = img_to_array(faceROI)
-            faceROI = preprocess_input(faceROI)
             faceROI = np.expand_dims(faceROI, axis=0)
 
             # Passing the pre-processed image with classification model to check if there is a mask or not
             (mask, withoutMask) = faceMaskClassifier.predict(faceROI)[0]
+            # (mask, withoutMask) = faceMaskClassifier.predict(faceROI)
 
             # find the class and associated colour to use for the bounding box and text
             label = "Mask" if mask > withoutMask else "No Mask"
@@ -77,18 +66,7 @@ def detectFaceAndClassify(faceNet, faceMaskClassifier, testImagePath, threshold)
 
 if __name__ == "__main__":
     # parse the arguments by constructing the argument parser
-    argP = argparse.ArgumentParser()
-    argP.add_argument("-i", "--testImagePath", required=True,
-                    help="path to input image")
-    argP.add_argument("-f", "--face", type=str,
-                    default="models",
-                    help="path to face detector model directory")
-    argP.add_argument("-m", "--maskModel", type=str,
-                    default="models/face_mask_classifier.model",
-                    help="path to trained face mask detector model")
-    argP.add_argument("-c", "--confidence", type=float, default=0.5,
-                    help="minimum probability to filter weak detections")
-    args = vars(argP.parse_args())
+    args = constructArgParser()
 
     #loading the models form disk
     faceNet, faceMaskClassifier = loadModels(args["face"], args["face"], args["maskModel"])
