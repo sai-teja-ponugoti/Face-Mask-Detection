@@ -68,5 +68,5 @@ $ python3 video_face_mask_detector.py --face "folder which contains pre-trined m
 
 
 ### References and Credits:
-1.https://www.pyimagesearch.com/2018/02/26/face-detection-with-opencv-and-deep-learning/
-2.Dataset Credits : https://github.com/chandrikadeb7 
+- https://www.pyimagesearch.com/2018/02/26/face-detection-with-opencv-and-deep-learning/
+- Dataset Credits : https://github.com/chandrikadeb7 
