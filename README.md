@@ -63,3 +63,10 @@ $ python3 video_face_mask_detector.py --face "folder which contains pre-trined m
 ![Live Demo](https://github.com/sai-teja-ponugoti/Face-Mask-Detection/blob/main/video_detection_demo.gif)
 
 #### Check out the demo [here.](https://youtu.be/dN7FhmPzuxA)
+
+### If you like the project give credits by forking,staring or watching this git hub repo.:slightly_smiling_face:
+
+
+### References and Credits:
+1.https://www.pyimagesearch.com/2018/02/26/face-detection-with-opencv-and-deep-learning/
+2.Dataset Credits : https://github.com/chandrikadeb7 
