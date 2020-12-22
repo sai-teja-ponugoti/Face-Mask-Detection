@@ -60,5 +60,6 @@ $ python3 video_face_mask_detector.py --face "folder which contains pre-trined m
 ![](https://github.com/sai-teja-ponugoti/Face-Mask-Detection/blob/main/output.png)
 
 ### Face mask detection in video stream:
-Check out the demo [here](https://github.com/sai-teja-ponugoti/Face-Mask-Detection/blob/main/output.png)
+![Live Demo](https://github.com/sai-teja-ponugoti/Face-Mask-Detection/blob/main/video_demo.gif)
 
+#### Check out the demo [here.](https://youtu.be/dN7FhmPzuxA)
